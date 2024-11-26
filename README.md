@@ -41,86 +41,45 @@ L'architecture est composée des éléments suivants :
 
 Le répertoire [vote/](./src/vote/) contient l'application qui fournit la page de vote.
 
-### Développement du Dockerfile
-
-- Copiez ce répertoire dans l'espace du lab
-
-- Placez-vous dans le répertoire vote et crééz un fichier nommé **Dockerfile**
-
-Ajoutez dans ce Dockerfile les instructions requises pour effectuer les actions suivantes (ordre est à respecter) :
+Buildez la version **1.0** de l'image custom **vote** en respectant les caractéristiques suivantes :
 
 - L'image de base doit être la version **3.11-slim** de l'image **python**
 
-- Ajoutez l'instruction suivante pour configurer le [répertoire courant](https://docs.docker.com/reference/dockerfile/#workdir) du Dockerfile : `WORKDIR /usr/local/app`
+- Le répertoire **[static/](./src/vote/static/)** doit être copié dans le répertoire **/usr/local/app** de l'image
 
-- Copie du répertoire **static** dans le répertoire **/usr/local/app** de l'image : `COPY static /usr/local/app/static`
+- Le répertoire **[template/](./src/vote/template/)** doit être copié dans le répertoire **/usr/local/app** de l'image
 
-- Copie du répertoire **templates** dans le répertoire **/usr/local/app** de l'image
+- Les fichiers **[app.py](./src/vote/app.py)** et **[requirements.txt](./src/vote/requirements.txt)** doivent être copiés dans le répertoire **/usr/local/app** de l'image
 
-- Copie des fichiers **app.py** et **requirements.txt** dans le répertoire **/usr/local/app** de l'image : `COPY app.py requirements.txt /usr/local/app`
+- Les paquets listés dans le fichier requirements.txt doivent être installés dans l'image via la commande `pip install --no-cache-dir -r requirements.txt`
 
-- Installation des paquets listés dans le fichier requirements.txt via la commande `pip install --no-cache-dir -r requirements.txt`
+- La variable d'environnement **PYTHONPATH** doit avoir la valeur **/usr/local/app:$PYTHONPATH**
 
-- Enfin l'instruction suivante doit clotûrer le fichier pour que l'application soit lancée au démarrage : `CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "--log-file", "-", "--access-logfile", "-", "--workers", "4", "--keep-alive", "0"]`
-
-### Build de l'image
-
-A l'aide du Dockerfile que vous venez de créer, utilisez la commande [docker build](https://docs.docker.com/get-started/docker-concepts/building-images/build-tag-and-publish-an-image/#building-images) pour builder la version **1.0** de l'image **vote**.
-
-N'oubliez pas de préciser le [contexte de build](https://docs.docker.com/build/concepts/context/) dans votre commande.
+- La commande suivante doit être lancée au démarrage : `gunicorn app:app -b 0.0.0.0:80 --log-file - --access-logfile - --workers 4 --keep-alive 0`
 
 ### b. Result
 
 Le répertoire [result/](./src/result/) contient l'application qui fournit la page de résultat.
 
-### Développement du Dockerfile
-
-- Copiez ce répertoire dans l'espace du lab
-
-- Placez-vous dans le répertoire result et crééz un fichier nommé **Dockerfile**
-
-Ajoutez dans ce Dockerfile les instructions requises pour effectuer les actions suivantes (ordre est à respecter) :
+Buildez la version **1.0** de l'image custom **vote** en respectant les caractéristiques suivantes :
 
 - L'image de base doit être la version **18-slim** de l'image **node**
 
-- Ajoutez l'instruction suivante pour configurer le [répertoire courant](https://docs.docker.com/reference/dockerfile/#workdir) du Dockerfile : `WORKDIR /usr/local/app`
+- Le répertoire **[views/](./src/result/views/)** doit être copié dans le répertoire **/usr/local/app** de l'image
 
-- Copie du répertoire **views** dans le répertoire **/usr/local/app** de l'image
+- Les fichiers **[package-lock.json](./src/result/package-lock.json)**, **[package.json](./src/result/package.json)** et **[server.js](./src/result/server.js)** doivent être copiés dans le répertoire **/usr/local/app** de l'image
 
-- Copie des fichiers **package-lock.json**, **package.json** et **server.js** dans le répertoire **/usr/local/app** de l'image
-
-- Exécution des commandes :
-    - `npm install -g nodemon`
-    - `npm ci && npm cache clean --force && mv /usr/local/app/node_modules /node_modules`
+- Les commandes `npm install -g nodemon` et `npm ci && npm cache clean --force && mv /usr/local/app/node_modules /node_modules` doivent être exécutées
 
 - La variable d'environnement **PORT** doit avoir pour valeur **80**
 
-- Enfin les instructions suivantes doivent clotûrer le fichier pour que l'application soit lancée au démarrage :
-
-````
-ENTRYPOINT ["/usr/bin/tini", "--"]
-CMD ["node", "server.js"]
-````
-
-### Build de l'image
-
-A l'aide du Dockerfile que vous venez de créer, utilisez la commande [docker build](https://docs.docker.com/get-started/docker-concepts/building-images/build-tag-and-publish-an-image/#building-images) pour builder la version **1.0** de l'image **result**.
-
-N'oubliez pas de préciser le [contexte de build](https://docs.docker.com/build/concepts/context/) dans votre commande.
+- La commande suivante doit être lancée au démarrage : `/usr/bin/tini -- node server.js` (passez `/usr/bin/tini --` en ENTRYPOINT et `node server.js` en CMD).
 
 ### c. Worker
 
 Le répertoire [worker/](./src/worker/) contient l'application qui permet de lire les votes dans le cache redis et les écrire dans la base de données PostgreSQL. Ce répertoire contient également le **[Dockerfile](./src/worker/Dockerfile)** permettant de build l'image.
 
-Copiez ce répertoire dans l'espace du lab.
-
-### Build de l'image
-
-- Déplacez dans le répertoire du lab le fichier **Dockerfile** contenu dans votre répertoire **worker/**
-- Placez-vous dans le répertoire worker/
-- A l'aide du Dockerfile que vous venez de déplacer, utilisez la commande [docker build](https://docs.docker.com/get-started/docker-concepts/building-images/build-tag-and-publish-an-image/#building-images) pour builder la version **1.0** de l'image **worker**.
-
-N'oubliez pas de préciser le [contexte de build](https://docs.docker.com/build/concepts/context/) dans votre commande.
+Buildez la version **1.0** de l'image custom **worker** à l'aide de ce Dockerfile.
 
 ### d. Redis et Db
 
@@ -128,7 +87,7 @@ Nous utiliserons directement les images [redis](https://hub.docker.com/_/redis) 
 
 ## 3. Création des réseaux
 
-A l'aide de la commande [docker network create](https://docs.docker.com/engine/network/#user-defined-networks) créez les 2 réseaux suivants :
+Créez les 2 réseaux suivants :
 
 - Front-end
     - **Nom** - front-end
@@ -142,7 +101,7 @@ A l'aide de la commande [docker network create](https://docs.docker.com/engine/n
 
 ## 4. Création du volume
 
-Utilisez la commande [docker volume create](https://docs.docker.com/reference/cli/docker/volume/create/) pour créer un volume nommé **db-data**. Ce volume sera utilisé par la base de données pour y persister ses données.
+Créez un volume nommé **db-data**. Ce volume sera utilisé par la base de données pour y persister ses données.
 
 ## 5. Création des conteneurs
 
