@@ -1,7 +1,5 @@
 # Lab 1 - Création d'une application multi-conteneurs avec la CLI Docker
 
-Créez un répertoire dédié à ce lab qui sera cité tout au long de l'énoncé comme **l'espace du lab**.
-
 ## 1. Présentation de l'application
 
 ### a. L'application
