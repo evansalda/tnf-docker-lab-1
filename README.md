@@ -59,7 +59,7 @@ Buildez la version **1.0** de l'image custom **vote** en respectant les caracté
 
 Le répertoire [result/](./src/result/) contient l'application qui fournit la page de résultat.
 
-Buildez la version **1.0** de l'image custom **vote** en respectant les caractéristiques suivantes :
+Buildez la version **1.0** de l'image custom **result** en respectant les caractéristiques suivantes :
 
 - L'image de base doit être la version **18-slim** de l'image **node**
 
