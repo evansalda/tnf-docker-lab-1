@@ -67,7 +67,7 @@ Buildez la version **1.0** de l'image custom **result** en respectant les caract
 
 - Les fichiers **[package-lock.json](./src/result/package-lock.json)**, **[package.json](./src/result/package.json)** et **[server.js](./src/result/server.js)** doivent être copiés dans le répertoire **/usr/local/app** de l'image
 
-- Les commandes `apt-get update && apt-get install -y tini`, `npm install -g nodemon` et `npm ci && npm cache clean --force && mv /usr/local/app/node_modules /node_modules` doivent être exécutées
+- Les commandes `apt-get update && apt-get install -y tini`, `npm install -g nodemon` et `cd /usr/local/app && npm ci && npm cache clean --force && mv /usr/local/app/node_modules /node_modules` doivent être exécutées
 
 - La variable d'environnement **PORT** doit avoir pour valeur **80**
 
